@@ -1,0 +1,178 @@
+\documentclass{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode} 
+\usepackage{amsmath}
+\usepackage{ctex}
+\title{Pseudocode Part}
+
+\begin{document} 
+
+\maketitle
+
+\textbf{UCB-D pseudocode }
+
+
+
+\begin{minipage}{15cm}
+    \begin{algorithm}[H]
+        \caption{UCB-Cluster (General case)}
+        \begin{algorithmic}[1]
+            \For{$t=1,2,3$}
+                \State Pull three arms exactly once and calculate the estimated probabilities
+            \EndFor
+            \For{$t=4, \cdots, N$}
+                
+
+                \State Choose the best cluster
+
+                \State Choose the best arm inside the above chosen cluster
+
+                \State Update the 'count' and 'probability' of both the arm and the corresponding cluster
+            \EndFor
+
+        \end{algorithmic}
+    \end{algorithm}
+\end{minipage}
+
+
+
+\begin{minipage}{15cm}
+\begin{algorithm}[H]
+    \caption{UCB-Cluster (Given precise basic settings)}
+    \begin{algorithmic}[1]
+        \For{$t=1,2,3$}
+            \State Pull three arms exactly once and calculate the estimated probabilities
+        \EndFor
+        \For{$t=4, \cdots, N$}
+            
+            \State $G(t) \leftarrow\arg\max_{g\in \{1,2\}}(\hat{\phi_g} + c_1 \cdot \sqrt{\frac{2\log t}{groupCount(g)}})$ \Comment{Choose the best cluster}
+            \State \If{$G(t) = 1$}
+                \State $I(t) \leftarrow 1$  \Comment{This cluster has only one arm, simply choose it}
+                
+                \State $armCount(1) \leftarrow armCount(1) + 1$ \Comment{Update armCount and groupCount} 
+                \State $groupCount(1) \leftarrow groupCount(1) + 1$
+
+                
+                \State $\hat{\theta}(1) \leftarrow \hat{\theta}(1)  + \frac{1}{armCount(1)}\left[
+                    r_{I(1)} - \hat{\theta}(1)
+                \right]$ \Comment{Update probability of this arm}
+                \State $\hat{\phi}(1) \leftarrow \hat{\phi}(1)  + \frac{1}{groupCount(1)}\left[
+                    r_{I(1)} - \hat{\phi}(1)
+                \right]$ \Comment{Update probability of this cluster}
+            \ElsIf{$G(t) = 2$}
+                \State $I(t) \leftarrow \arg\max_{
+                    j\in \{2,3\}
+                    } ( \hat{\theta_j} + c_2 \cdot 
+                    \sqrt{\frac{2\log t}{armCount(j)}})$
+                    \Comment{Best arm inside this cluster}
+                
+                \State $armCount(I(t)) \leftarrow armcount(I(t)) + 1$ \Comment{Update armCount and groupCount} 
+                    \State $groupCount(2) \leftarrow groupCount(2) + 1$
+                \State $\hat{\theta}(I(t)) \leftarrow \hat{\theta}(I(t))  + \frac{1}{armCount(I(t))}\left[
+                    r_{I(t)} - \hat{\theta}(I(t))
+                \right]$ \Comment{Update probability of arm}
+                \State $\hat{\phi}(2) \leftarrow \hat{\phi}(2)  + \frac{1}{groupCount(2)}\left[
+                    r_{2} - \hat{\phi}(2)
+                \right]$  \Comment{Update probability of this cluster}
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+\end{minipage}
+
+
+\begin{minipage}{10cm}
+    \begin{algorithm}[H]
+        \caption{UCB-With-Cost}
+        \begin{algorithmic}[1]
+            \For{$t=1,2,3$}
+                \State $I(t) \leftarrow t$
+                \State $count(I(t)) \leftarrow 1$
+                \State $\hat{\theta}(I(t))\leftarrow r_{I(t)}$
+            \EndFor
+            \For{$t=4, \cdots, N$}
+                
+                \State $I(t) \leftarrow\arg\max_{j\in \{1,2,3\}} \left( \frac{\hat{\theta_j}}{c_j} + c\cdot \sqrt{\frac{2\log t}{\mathrm{count}(j)}} \right)$
+
+                \State $count(I(t))\leftarrow count(I(t)) + 1$
+                \State $\hat{\theta}(I(t)) \leftarrow \hat{\theta}(I(t))  + \frac{1}{Count(I(t))}\left[
+                        r_{I(t)} - \hat{\theta}(I(t))
+                    \right]$
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+    \end{minipage}
+
+% \begin{algorithm}
+%     \caption{UCB-D}
+%     \begin{algorithmic}[1]
+%         \For{$t=1,2,3$}
+%             \State Pull three arms exactly once and calculate the estimated probabilities
+%         \EndFor
+%         \For{$t=4, \cdots, N$}
+%             \State $G(t) \leftarrow\arg\max_{g\in \{1,2\}}(\hat{\phi_g} + c_1 \cdot \sqrt{\frac{2\log t}{groupCount(g)}})$
+%             \State \If{$G(t) = 1$}
+%                 \State $I(t) \leftarrow 1$
+%                 \State $groupCount(1) \leftarrow groupCount(1) + 1$
+%                 \State $\hat{\theta}(1) \leftarrow \hat{\theta}(1)  + \frac{1}{armCount(1)}\left[
+%                     r_{I(1)} - \hat{\theta}(1)
+%                 \right]$
+%                 \State $\hat{\phi}(1) \leftarrow \hat{\phi}(1)  + \frac{1}{groupCount(1)}\left[
+%                     r_{I(1)} - \hat{\phi}(1)
+%                 \right]$
+%             \ElsIf{$G(t) = 2$}
+%                 \State $I(t) \leftarrow \arg\max_{
+%                     j\in \{2,3\}
+%                     } ( \hat{\theta_j} + c_2 \cdot 
+%                     \sqrt{\frac{2\log t}{armCount(j)}})$
+%                 \State $groupCount(2) \leftarrow groupCount(2) + 1$
+%                 \State $\hat{\theta}(1) \leftarrow \hat{\theta}(1)  + \frac{1}{armCount(1)}\left[
+%                     r_{I(1)} - \hat{\theta}(1)
+%                 \right]$
+%                 \State $\hat{\phi}(2) \leftarrow \hat{\phi}(2)  + \frac{1}{groupCount(2)}\left[
+%                     r_{I(1)} - \hat{\phi}(1)
+%                 \right]$
+%             \EndIf
+%         \EndFor
+%     \end{algorithmic}
+% \end{algorithm}
+
+% \begin{algorithm}
+% 	\caption{PPO} 
+% 	\begin{algorithmic}[1]
+% 		\For {$iteration=1,2,\ldots$}
+% 			\For {$actor=1,2,\ldots,N$}
+% 				\State Run policy $\pi_{\theta_{old}}$ in environment for $T$ time steps
+% 				\State Compute advantage estimates $\hat{A}_{1},\ldots,\hat{A}_{T}$
+% 			\EndFor
+% 			\State Optimize surrogate $L$ wrt. $\theta$, with $K$ epochs and minibatch size $M\leq NT$
+% 			\State $\theta_{old}\leftarrow\theta$
+% 		\EndFor
+% 	\end{algorithmic} 
+% \end{algorithm}
+
+% \begin{algorithm}
+% 	\caption{Game Theory Controller}
+% 	\begin{algorithmic}[1]
+% 		\For {Every time step}
+% 		\State Calculate target seeking command $\mathbf{x}_{tsCmd}$ (Eq.: 3.12)
+% 		\For {All map measurements from $\mathbf{x}_{Map}$}
+% 		\State Denormalize measurement (Eq.: 3.14)
+% 		\State Add margin of safety (Eq.: 3.15)
+% 		\State Calculate altitude difference $\Delta h_{ObsSafe_{j}}$ to aircraft (Eq.: 3.16)
+% 		\If {$\Delta h_{ObsSafe_{j}}>0$}
+% 		\State Add measurement to set of critical measurements $\mathcal{M}_{crit}$ (Eq.: 3.17)
+% 		\EndIf
+% 		\EndFor
+% 		\For {All measurements in $\mathcal{M}_{crit}$}
+% 		\State Calculate local obstacle avoidance vector (Eq.: 3.20)
+% 		\EndFor
+% 		\State Sum over all local avoidance vectors (Eq.: 3.22)
+% 		\State Transform to global coordinate frame to receive $\mathbf{x}_{oaCmd}$ (Eq.: 3.23)
+% 		\State Calculate obstacle avoidance weight $w_{oa}$ based on critical zone weight (Eq.: 3.24)
+% 		\State Calculate target seeking weight $w_{ts}$ as $1-w_{oa}$ (Eq.: 3.13)
+% 		\State Calculate command vector $\mathbf{x}_{HSaCmd}=w_{oa}\mathbf{x}_{oaCmd}+w_{ts}\mathbf{x}_{tsCmd}$ (Eq.: 3.11)
+% 		\EndFor
+% 	\end{algorithmic} 
+% \end{algorithm} 
+\end{document}

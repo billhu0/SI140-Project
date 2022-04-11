@@ -1,0 +1,1673 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    \usepackage{algorithm}
+\usepackage{algpseudocode} 
+\usepackage{amsmath}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Probability and Mathematical Statistics Project Report}
+    \date{January 16, 2022}
+    \author{Luojia Hu 2020533121}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+   
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{the-oracle-value}{%
+\section{The theoretically maximized expectation (oracle value)}\label{the-oracle-value}}
+
+From the table of $\theta_j$, we should always choose arm 1 since it has
+the greatest probability of winning, $0.8$, bigger than the others $0.6$ and $0.5$. In other words,
+\(argmax([0.8, 0.6, 0.5]) = \mathrm{the\ first\ one}\). Therefore the
+theoretically maximized expectation of the aggregate rewards over
+\(6000\) time slots is
+
+\[
+    E(\sum_{t=1}^{N} r_{I(t)}) = \sum_{t=1}^{N} E(r_{I(t)}) = \sum_{t=1}^{N} \theta_{I(t)} = 6000\cdot 0.8=4800
+\]
+
+    \hypertarget{classical-bandit-algorithms-implementation}{%
+\section{Classical bandit algorithms'
+implementation}\label{classical-bandit-algorithms-implementation}}
+
+In this part, we use python to simulate these three algorithms.
+
+Each algorithms are simulated with real probability {[}0.8, 0.6, 0.5{]},
+and repeats for 200 times to get an average. During the process, the
+results' average and variance are calculated.
+
+The code and result is as follows. (The first code block is the
+dependencies and real probability used by all the following codes.)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{ﬁnumpy} \PY{k}{as} \PY{n+nn}{npy}
+\PY{k+kn}{import} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k}{as} \PY{n+nn}{st}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+
+\PY{n}{N}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{6001}  \PY{c+c1}{\PYZsh{} the number of time slots}
+\PY{n}{realProb}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.8}\PY{p}{,} \PY{l+m+mf}{0.6}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} real probability of arms}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{epsilon-greedy-algorithm-simulation}{%
+\subsection{\texorpdfstring{\(\epsilon\)-greedy algorithm
+simulation}{\textbackslash epsilon-greedy algorithm simulation}}\label{epsilon-greedy-algorithm-simulation}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{EpsilonGreedy}\PY{p}{(}\PY{n}{epsilon}\PY{p}{:} \PY{n+nb}{float}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{int}\PY{p}{:}
+    \PY{n}{sumOfResult}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{0}  \PY{c+c1}{\PYZsh{} sum of rewards}
+    \PY{n}{theta}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  \PY{c+c1}{\PYZsh{} experienced (posterior) probability}
+    \PY{n}{count}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  \PY{c+c1}{\PYZsh{} pulling count for each arm}
+    \PY{c+c1}{\PYZsh{} Generate an r.v. with Bern(epsilon) distribution}
+    \PY{n}{option} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{epsilon}\PY{p}{,} \PY{n}{N}\PY{p}{)}
+    \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} exploitation and exploration trade\PYZhy{}off}
+        \PY{k}{if} \PY{n}{option}\PY{p}{[}\PY{n}{t}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:} \PY{c+c1}{\PYZsh{} exploitation }
+            \PY{c+c1}{\PYZsh{} choose the arm with currently known greatest probability }
+            \PY{n}{arm} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{theta}\PY{p}{)}      
+        \PY{k}{else}\PY{p}{:}              \PY{c+c1}{\PYZsh{} exploration}
+            \PY{c+c1}{\PYZsh{} randomly choose an arm to explore new possibilities}
+            \PY{n}{arm} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  
+        \PY{c+c1}{\PYZsh{} pull the arm and get the result}
+        \PY{n}{reward} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{realProb}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)}
+        \PY{n}{sumOfResult} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{c+c1}{\PYZsh{} update \PYZsq{}count\PYZsq{} and \PYZsq{}posterior probability\PYZsq{}}
+        \PY{n}{count}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+        \PY{n}{theta}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{p}{(}\PY{n}{reward} \PY{o}{\PYZhy{}} \PY{n}{theta}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)} \PY{o}{/} \PY{n}{count}\PY{p}{[}\PY{n}{arm}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} after the whole game, return the sum of rewards}
+    \PY{k}{return} \PY{n}{sumOfResult}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{ucb-simulation}{%
+\subsection{UCB simulation}\label{ucb-simulation}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{UCB}\PY{p}{(}\PY{n}{c}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+    \PY{n}{sumOfResult}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{0}  \PY{c+c1}{\PYZsh{} sum of rewards}
+    \PY{n}{theta} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  \PY{c+c1}{\PYZsh{} experienced (posterior) probability}
+    \PY{n}{count} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  \PY{c+c1}{\PYZsh{} pulling count for each arm}
+    \PY{k}{for} \PY{n}{arm} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}  \PY{c+c1}{\PYZsh{} init when t = 1,2,3}
+        \PY{n}{count}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{1}
+        \PY{n}{reward} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{realProb}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)}
+        \PY{n}{sumOfResult} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{n}{theta}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{=} \PY{n+nb}{float}\PY{p}{(}\PY{n}{reward}\PY{p}{)}
+    \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{N}\PY{p}{)}\PY{p}{:}  \PY{c+c1}{\PYZsh{} proceed for t = 4 to N}
+        \PY{c+c1}{\PYZsh{} calculate the traded\PYZhy{}off value (of exploit. and explore.) of 3 arms}
+        \PY{n}{temp\PYZus{}list} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{theta} \PY{o}{+} \PY{n}{c} \PY{o}{*} \PY{n}{npy}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{npy}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{t}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{n}{count}\PY{p}{)}\PY{p}{)}
+        \PY{n}{arm} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{temp\PYZus{}list}\PY{p}{)}  \PY{c+c1}{\PYZsh{} choose the best arm }
+        \PY{n}{reward} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{realProb}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} pull the arm}
+        \PY{n}{sumOfResult} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{n}{count}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}  \PY{c+c1}{\PYZsh{} update \PYZsq{}count\PYZsq{} and \PYZsq{}posterior probability\PYZsq{}}
+        \PY{n}{theta}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{p}{(}\PY{p}{(}\PY{n}{reward} \PY{o}{\PYZhy{}} \PY{n}{theta}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)} \PY{o}{/} \PY{n}{count}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{sumOfResult}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{thompson-sampling-simulation}{%
+\subsection{Thompson Sampling
+simulation}\label{thompson-sampling-simulation}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{ThompsonSampling}\PY{p}{(}\PY{n}{prior}\PY{p}{:} \PY{n+nb}{list}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{int}\PY{p}{:}
+    \PY{n}{sumOfResult}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{0}  \PY{c+c1}{\PYZsh{} sum of rewards}
+    \PY{n}{BetaVar}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{prior}\PY{p}{)}  \PY{c+c1}{\PYZsh{} prior beta distribution parameters}
+    \PY{n}{theta}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+    \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}  \PY{c+c1}{\PYZsh{} sample \PYZsq{}theta\PYZsq{} from Beta distribution}
+            \PY{n}{theta}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{beta}\PY{p}{(}\PY{n}{BetaVar}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{BetaVar}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+        \PY{n}{arm} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{theta}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{} pull the arm and get the result}
+        \PY{n}{reward} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{realProb}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)}
+        \PY{n}{sumOfResult} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{c+c1}{\PYZsh{} update beta distribution parameter}
+        \PY{n}{BetaVar}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{n}{BetaVar}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{reward}\PY{p}{)}
+    \PY{k}{return} \PY{n}{sumOfResult}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{simulation-of-the-three-algorithms}{%
+\section{Simulation of the three
+algorithms}\label{simulation-of-the-three-algorithms}}
+
+In this part, we simulate these algorthms with different parameters, and
+see the reward averaged over 200 tries.
+
+\hypertarget{epsilon-greedy-algorithm-simulation}{%
+\subsection{\texorpdfstring{\(\epsilon\)-greedy algorithm
+simulation}{\textbackslash epsilon-greedy algorithm simulation}}\label{epsilon-greedy-algorithm-simulation}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{RepeatEpsilon}\PY{p}{(}\PY{n}{Repeats}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{k+kc}{None}\PY{p}{:}
+    \PY{n}{result} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}
+    \PY{n}{epsilon\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{l+m+mf}{0.4}\PY{p}{,} \PY{l+m+mf}{0.6}\PY{p}{,} \PY{l+m+mf}{0.8}\PY{p}{]}  \PY{c+c1}{\PYZsh{} try these epsilon values}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{13}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} set the output figure size}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{epsilon\PYZus{}list}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ep} \PY{o}{=} \PY{n}{epsilon\PYZus{}list}\PY{p}{[}\PY{n}{k}\PY{p}{]}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}\PY{p}{:}  \PY{c+c1}{\PYZsh{} repeat 200 times and store each result}
+            \PY{n}{result}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{EpsilonGreedy}\PY{p}{(}\PY{n}{epsilon}\PY{o}{=}\PY{n}{ep}\PY{p}{)}
+        \PY{n}{avg}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{average}\PY{p}{(}\PY{n}{result}\PY{p}{)}  \PY{c+c1}{\PYZsh{} calculate the averaged result}
+        \PY{c+c1}{\PYZsh{} plot the results and see its average and variance}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{result}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Epsilon=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, avg reward=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{ep}\PY{p}{,} \PY{n}{avg}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Game Rounds}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}  \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Sum of outcome}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{;} \PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{l+m+mi}{3500}\PY{p}{,} \PY{l+m+mi}{5000}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{When epsilon=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, average result is }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, variance is }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{ep}\PY{p}{,} \PY{n}{avg}\PY{p}{,} \PY{n}{npy}\PY{o}{.}\PY{n}{var}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{RepeatEpsilon}\PY{p}{(}\PY{n}{Repeats}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+When epsilon=0.2, average result is 4595.675, variance is 1015.639375
+When epsilon=0.4, average result is 4397.86, variance is 1029.1504
+When epsilon=0.6, average result is 4194.06, variance is 1117.7564
+When epsilon=0.8, average result is 3996.36, variance is 1387.0903999999998
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_10_1.png}
+
+    \begin{small}
+    Figure 3.1 \ \ \  Similation result of $\epsilon$-greedy algorithm using different $\epsilon$ values
+    \end{small}
+
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    From the result, when \(\epsilon=0.2\), the algorithm behaves best. As
+\(\epsilon\) grows larger, the result tend to be worse.
+\pagebreak
+\hypertarget{ucb-algorithm-simulation}{%
+\subsection{UCB algorithm simulation}\label{ucb-algorithm-simulation}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{RepeatUCB}\PY{p}{(}\PY{n}{Repeats}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{k+kc}{None}\PY{p}{:}
+    \PY{n}{result} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}
+    \PY{n}{c\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{]}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} set the output figure size}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{c\PYZus{}list}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{cv} \PY{o}{=} \PY{n}{c\PYZus{}list}\PY{p}{[}\PY{n}{k}\PY{p}{]}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}\PY{p}{:}  \PY{c+c1}{\PYZsh{} repeat 200 times and store each result}
+            \PY{n}{result}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{UCB}\PY{p}{(}\PY{n}{c}\PY{o}{=}\PY{n}{cv}\PY{p}{)}
+        \PY{n}{avg}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{average}\PY{p}{(}\PY{n}{result}\PY{p}{)} \PY{c+c1}{\PYZsh{} calculate the averaged result}
+        \PY{c+c1}{\PYZsh{} plot the results and see its average and variance}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{result}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{c=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, avg reward=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{cv}\PY{p}{,} \PY{n}{avg}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Game Rounds}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}  \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Sum of outcome}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{;} \PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{l+m+mi}{3500}\PY{p}{,} \PY{l+m+mi}{5000}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{When c=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, average result is }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, variance is }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{cv}\PY{p}{,} \PY{n}{avg}\PY{p}{,} \PY{n}{npy}\PY{o}{.}\PY{n}{var}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{RepeatUCB}\PY{p}{(}\PY{n}{Repeats}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+When c=2, average result is 4548.465, variance is 1434.698775
+When c=6, average result is 4144.035, variance is 1247.073775
+When c=9, average result is 4029.43, variance is 1158.1851000000001
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_12_1.png}
+
+    \begin{small}
+        Figure 3.2 \ \ \ Similation result of UCB algorithm using different $c$ values
+        \end{small}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    From the result, \(c=2\) is the best choice among the simulated values.
+\pagebreak
+\hypertarget{thompson-sampling-algorithm-simulation}{%
+\subsection{Thompson Sampling algorithm
+simulation}\label{thompson-sampling-algorithm-simulation}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{RepeatTS}\PY{p}{(}\PY{n}{Repeats}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{k+kc}{None}\PY{p}{:}
+    \PY{n}{result} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}
+    \PY{n}{beta\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{[}\PY{l+m+mi}{601}\PY{p}{,} \PY{l+m+mi}{401}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{401}\PY{p}{,} \PY{l+m+mi}{601}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{]}\PY{p}{]}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{13}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+        \PY{n}{b} \PY{o}{=} \PY{n}{beta\PYZus{}list}\PY{p}{[}\PY{n}{k}\PY{p}{]}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}\PY{p}{:}
+            \PY{n}{result}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{ThompsonSampling}\PY{p}{(}\PY{n}{prior}\PY{o}{=}\PY{n}{b}\PY{p}{)}
+        \PY{n}{avg}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{average}\PY{p}{(}\PY{n}{result}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{result}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Prior }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, avg reward=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{b}\PY{p}{,} \PY{n}{avg}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Game Rounds}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}  \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Sum of outcome}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{;} \PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{l+m+mi}{3500}\PY{p}{,} \PY{l+m+mi}{5000}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{When prior=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, average result is }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, variance is }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{b}\PY{p}{,} \PY{n}{avg}\PY{p}{,} \PY{n}{npy}\PY{o}{.}\PY{n}{var}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{RepeatTS}\PY{p}{(}\PY{n}{Repeats}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+When prior=[[1, 1], [1, 1], [1, 1]], average result is 4785.165, variance is
+1195.737775
+When prior=[[601, 401], [401, 601], [2, 3]], average result is 4789.905,
+variance is 1112.645975
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_14_1.png}
+
+    \begin{small}
+        Figure 3.3 \ \ \ Similation result of Thompson Sampling algorithm with different parameters $\alpha_j, \beta_j$
+    \end{small}
+    \end{center}
+    { \hspace*{\fill} \\}
+\pagebreak 
+    \hypertarget{numerical-results-comparison-and-parameters-impact}{%
+\section{Numerical results' comparison and parameters'
+impact}\label{numerical-results-comparison-and-parameters-impact}}
+
+\hypertarget{algorithm-result-comparison}{%
+\subsection{Algorithm result
+comparison}\label{algorithm-result-comparison}}
+
+\hypertarget{the-gaps-and-variances-of-the-algorithm-outputs}{%
+\subsubsection{The gaps and variances of the algorithm
+outputs}\label{the-gaps-and-variances-of-the-algorithm-outputs}}
+
+As is described in Task 1, the oracle value is \(6000\cdot 0.8=4800\).
+By using
+\[\mathrm{gap} = \mathrm{oracle\ value} - \mathrm{real\ value}\] we can
+find the gap.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Epsilon-greedy algorithm
+\end{enumerate}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+epsilon value & Mean of rewards & Variance & Gap \\
+\midrule
+\endhead
+0.2 & 4596.95 & 1079.58 & 203.05 \\
+0.4 & 4399.44 & 1344.98 & 400.56 \\
+0.6 & 4202.04 & 1356.96 & 597.56 \\
+0.8 & 3998.50 & 1196.28 & 801.50 \\
+\bottomrule
+\end{longtable}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  UCB algorithm
+\end{enumerate}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+c value & Mean of rewards & Variance & Gap \\
+\midrule
+\endhead
+2 & 4544.56 & 1338.49 & 255.44 \\
+6 & 4140.30 & 1032.85 & 659.70 \\
+9 & 4030.12 & 1227.88 & 769.88 \\
+\bottomrule
+\end{longtable}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Thompson Sampling algorithm
+\end{enumerate}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+prior distribution value & Mean of rewards & Variance & Gap \\
+\midrule
+\endhead
+{[}(1, 1), (1, 1), (1, 1){]} & 4786.01 & 1125.25 & 13.99 \\
+{[}(601,401), (401,601), (2,3){]} & 4793.39 & 1147.53 & 6.61 \\
+\bottomrule
+\end{longtable}
+
+    \hypertarget{analysis-of-the-algorithm-outputs}{%
+\subsubsection{Analysis of the algorithm
+outputs}\label{analysis-of-the-algorithm-outputs}}
+
+To judge an algorithm's goodness, we need to focus on both its accuracy
+and stability. Accuracy can be measured by the gap, and stability can be
+measured by its variance. A higher variance indicates poorer stability.
+
+\begin{itemize}
+\item
+  As for \textbf{accuracy}, clearly, Thompson Sampling behaves best in the three
+  algoriths. Both prior beta distributions in the case turns out to be
+  great. The final results are very close to 4800, the oracle value. To
+  understand why it is best, we need some further analysis, described
+  later.
+\item
+  As for \textbf{stability}, epsilon-greedy algorithm with \(\epsilon=0.2\), and
+  Thompson sampling algorithm with both cases performs better, whose
+  variances are around \(1000\), evidently lower than epsilon-greedy
+  algorithm with larger \(\epsilon\), and UCB algorithm. For
+  \(\epsilon\)-greedy, this meets our intuitive, since larger
+  \(\epsilon\) means higher probability of exploration (which has more
+  uncertainty, increasing variance).
+\end{itemize}
+
+Therefore, given the above table and considering both accuracy and
+stability, Thompson sampling algorithm is the best among the three
+algorithms.
+
+    \hypertarget{the-parameters-impacts}{%
+\subsection{The parameters' impacts}\label{the-parameters-impacts}}
+
+To see the parameters' (\(\epsilon, c\) and prior beta distribution), we
+can first try more parameters (\(\epsilon\), \(c\), or prior beta
+distribution) in the algorithms in order to try to find the best
+parameter value. This helps we understand the impacts of the parameters
+respectively.
+
+\textbf{Note}: Since the impact of the parameters is highly correlated with the exploration-exploitation trade-off, \textbf{such impact of the parameters will be discussed in detail in next part}, `the understanding of exploration-exploitation trade-off'. 
+Setting them apart is complicated and might harm the logicality as well as readibility. 
+
+\hypertarget{epsilon-greedy-algorithm}{%
+\subsubsection{Epsilon-greedy
+algorithm}\label{epsilon-greedy-algorithm}}
+
+For epsilon-greedy algorithm, after trying several \(epsilon\) (each
+repeat for 200 times to get an average), we can draw the graph showing
+the relationship of epsilon and final result. The code and result is as
+follows:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{PlotEpsilon}\PY{p}{(}\PY{n}{Repeats}\PY{p}{:} \PY{n+nb}{int}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} create a list of [0.02, 0.04, ..., 0.5] to store epsilon and result}
+    \PY{n}{epsilon\PYZus{}list} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mf}{0.02}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.02}\PY{p}{)}
+    \PY{n}{result\PYZus{}list}  \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mf}{0.02}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.02}\PY{p}{)}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{24}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ep} \PY{o}{=} \PY{n}{epsilon\PYZus{}list}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+        \PY{n}{sumR} \PY{o}{=} \PY{l+m+mi}{0}
+        \PY{c+c1}{\PYZsh{} for each epsilon, repeat for 200 times to get an averaged output}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}\PY{p}{:}  \PY{n}{sumR} \PY{o}{+}\PY{o}{=} \PY{n}{EpsilonGreedy}\PY{p}{(}\PY{n}{epsilon}\PY{o}{=}\PY{n}{ep}\PY{p}{)}
+        \PY{n}{result\PYZus{}list}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{sumR} \PY{o}{/} \PY{n}{Repeats}
+        \PY{c+c1}{\PYZsh{} this line is for debug use}
+        \PY{c+c1}{\PYZsh{} print(\PYZdq{}epsilon=\PYZob{}\PYZcb{}, avg=\PYZob{}\PYZcb{}\PYZdq{}.format(ep, result\PYZus{}list[i]))}
+    \PY{c+c1}{\PYZsh{} Plot the relationship between epsilon and final result}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{111}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Relation of epsilon and final result}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{epsilon\PYZus{}list}\PY{p}{,} \PY{n}{result\PYZus{}list}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markerfacecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{;}       
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{l+m+mi}{4200}\PY{p}{,} \PY{l+m+mi}{4800}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{epsilon}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}  
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{avg final result}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{PlotEpsilon}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_18_0.png}
+
+    \begin{small}
+        Figure 4.1\ \ \  Relationship between $\epsilon$ and the averaged final result
+    \end{small}
+
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The result seems inconsistent with our intuitive guess that,
+\(\epsilon=0\) makes the greatest result. We know that a small epsilon
+value means higher probability of `expoitation', but why does pure
+exploitation behaves best? It's because that \texttt{numpy.argmax(arr)}
+will always return the first max value's index if there are several
+equal max values. For example, the following code
+
+\texttt{numpy.argmax(arr)\ \ \#\ arr\ =\ {[}0,\ 0,\ 0{]}}
+
+will always return \(0\), instead of a random value of \(0, 1, 2\). In a
+coincidence, the first arm turns out to be the arm with greatest
+probability (which is \(0.8\), compared with \(0.6\) and \(0.5\)). By
+pure exploitation, the algorithm selects the first arm every time,
+letting the final result be greatest (very close to oracle value
+\(4800\)).
+
+To make the result more general, we can rewrite the above function,
+letting \texttt{argmax} return a random number between the indexes if
+equal values exists. The real probability and the oracle value are
+unchanged in the new case. The corrected code and result is as follows:
+\pagebreak
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}rewritten function of argmax(theta) \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}which returns a random number between indexes when same values exists\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}e.g. argmax3([0,0,0]) will return a random number of 0,1,2 instead of 0\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{argmax3}\PY{p}{(}\PY{n}{theta}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{==} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{==} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{:}
+        \PY{k}{return} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{==} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o+ow}{and} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{:}
+        \PY{k}{return} \PY{p}{(}\PY{l+m+mi}{0} \PY{k}{if} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)} \PY{k}{else} \PY{l+m+mi}{1}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{==} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]} \PY{o+ow}{and} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+        \PY{k}{return} \PY{p}{(}\PY{l+m+mi}{1} \PY{k}{if} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)} \PY{k}{else} \PY{l+m+mi}{2}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{==} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]} \PY{o+ow}{and} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{theta}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{:}
+        \PY{k}{return} \PY{p}{(}\PY{l+m+mi}{0} \PY{k}{if} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)} \PY{k}{else} \PY{l+m+mi}{2}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{k}{return} \PY{n}{npy}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{theta}\PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}Modified EpsilonGreedy function which uses the above \PYZsq{}argmax\PYZsq{} function instead of the method in numpy\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{EpsilonGreedy}\PY{p}{(}\PY{n}{epsilon}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{int}\PY{p}{:}
+    \PY{n}{sumOfResult}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{0}  \PY{c+c1}{\PYZsh{} sum of rewards}
+    \PY{n}{theta} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  \PY{c+c1}{\PYZsh{} experienced (posterior) probability}
+    \PY{n}{count} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  \PY{c+c1}{\PYZsh{} pulling count for each arm}
+    \PY{c+c1}{\PYZsh{} Generate an r.v. with Bern(epsilon) distribution}
+    \PY{n}{option} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{epsilon}\PY{p}{,} \PY{n}{N}\PY{p}{)}
+    \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} exploitation and exploration trade\PYZhy{}off}
+        \PY{k}{if} \PY{n}{option}\PY{p}{[}\PY{n}{t}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:} \PY{c+c1}{\PYZsh{} exploitation }
+            \PY{c+c1}{\PYZsh{} choose the arm with currently known greatest probability }
+            \PY{c+c1}{\PYZsh{} arm = npy.argmax(theta)   }
+            \PY{n}{arm} \PY{o}{=} \PY{n}{argmax3}\PY{p}{(}\PY{n}{theta}\PY{p}{)}   
+        \PY{k}{else}\PY{p}{:}              \PY{c+c1}{\PYZsh{} exploration}
+            \PY{c+c1}{\PYZsh{} randomly choose an arm to explore new possibilities}
+            \PY{n}{arm} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}  
+        \PY{c+c1}{\PYZsh{} pull the arm and get the result}
+        \PY{n}{reward} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{realProb}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)}
+        \PY{n}{sumOfResult} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{c+c1}{\PYZsh{} update \PYZsq{}count\PYZsq{} and \PYZsq{}posterior probability\PYZsq{}}
+        \PY{n}{count}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+        \PY{n}{theta}\PY{p}{[}\PY{n}{arm}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{p}{(}\PY{n}{reward} \PY{o}{\PYZhy{}} \PY{n}{theta}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)} \PY{o}{/} \PY{n}{count}\PY{p}{[}\PY{n}{arm}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} after the whole game, return the sum of rewards}
+    \PY{k}{return} \PY{n}{sumOfResult}
+
+\PY{k}{def} \PY{n+nf}{PlotEpsilon}\PY{p}{(}\PY{n}{Repeats}\PY{p}{:} \PY{n+nb}{int}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}\PY{p}{:}
+    \PY{n}{epsilon\PYZus{}list} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mf}{0.02}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.02}\PY{p}{)}
+    \PY{n}{result\PYZus{}list}  \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mf}{0.02}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.02}\PY{p}{)}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{24}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ep} \PY{o}{=} \PY{n}{epsilon\PYZus{}list}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+        \PY{n}{sumR} \PY{o}{=} \PY{l+m+mi}{0}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{Repeats}\PY{p}{)}\PY{p}{:}  \PY{n}{sumR} \PY{o}{+}\PY{o}{=} \PY{n}{EpsilonGreedy}\PY{p}{(}\PY{n}{epsilon}\PY{o}{=}\PY{n}{ep}\PY{p}{)}
+        \PY{n}{result\PYZus{}list}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{sumR} \PY{o}{/} \PY{n}{Repeats}
+        \PY{c+c1}{\PYZsh{} print(\PYZdq{}epsilon=\PYZob{}\PYZcb{}, avg=\PYZob{}\PYZcb{}\PYZdq{}.format(ep, result\PYZus{}list[i]))}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{111}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Relation of epsilon and final result [updated]}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{epsilon\PYZus{}list}\PY{p}{,} \PY{n}{result\PYZus{}list}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markerfacecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{;}       \PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{l+m+mi}{4200}\PY{p}{,} \PY{l+m+mi}{4800}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{epsilon}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}  \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{avg final result}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{PlotEpsilon}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_20_0.png}
+
+    \begin{small}
+        Figure 4.2 \ \ \  Relationship between $\epsilon$ and final result, using the corrected 'argmax' function
+    \end{small}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    In this time, we find that \(\epsilon\approx 0.04\) behaves best.
+\pagebreak
+    \hypertarget{ucb-algorithm-analysis}{%
+\subsubsection{UCB algorithm analysis}\label{ucb-algorithm-analysis}}
+
+Similar for the UCB algorithm. A smaller \(c\) means higher probability
+of exploitation. We can draw the graph showing the relationship of \(c\)
+and final result (the same correction on `numpy.argmax()' is also
+implemented). The code and result is as follows:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{PlotC}\PY{p}{(}\PY{n}{Repeats}\PY{p}{:} \PY{n+nb}{int}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}\PY{p}{:}
+    \PY{n}{c\PYZus{}list}      \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}
+    \PY{n}{result\PYZus{}list} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{97}\PY{p}{)}\PY{p}{:}
+        \PY{n}{cv} \PY{o}{=} \PY{n}{c\PYZus{}list}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+        \PY{n}{sumR} \PY{o}{=} \PY{l+m+mi}{0}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{200}\PY{p}{)}\PY{p}{:}  \PY{n}{sumR} \PY{o}{+}\PY{o}{=} \PY{n}{UCB}\PY{p}{(}\PY{n}{c}\PY{o}{=}\PY{n}{cv}\PY{p}{)}
+        \PY{n}{result\PYZus{}list}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{sumR} \PY{o}{/} \PY{n}{Repeats}
+        \PY{c+c1}{\PYZsh{} this line is for debug use only.}
+        \PY{c+c1}{\PYZsh{} print(\PYZdq{}c=\PYZob{}\PYZcb{}, avg=\PYZob{}\PYZcb{}\PYZdq{}.format(cv, result\PYZus{}list[i]), end=\PYZsq{} ; \PYZsq{})}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{111}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Relation of c and final result}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{c\PYZus{}list}\PY{p}{,} \PY{n}{result\PYZus{}list}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markerfacecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{;}  \PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{l+m+mi}{3000}\PY{p}{,} \PY{l+m+mi}{5000}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{c}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}  \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{avg final result}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{PlotC}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+\pagebreak
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_23_0.png}
+
+    \begin{small}
+        Figure 4.3 \ \ \  Relationship between $c$ and the averaged final result
+    \end{small}
+
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    From the graph above, the algorithm behaves best when
+\(c\approx 0.035\).
+
+    \hypertarget{thompson-sampling-algorithm-analysis}{%
+\subsubsection{Thompson Sampling algorithm
+analysis}\label{thompson-sampling-algorithm-analysis}}
+
+For the Thompson-Sampling Problem, we can find that it works perfect,
+much better than the above two algorithms, as its output is very close
+to \texttt{4800}. The reason why it works well will be described in
+detail in task 5 (the understanding of exploration-exploitation
+trade-off).
+
+\textbf{Note}:  \textbf{The impact of the parameters will be discussed in detail in next part.}
+
+\pagebreak
+    \hypertarget{understanding-of-the-exploration-exploitation-trade-off.}{%
+\section{Understanding of the exploration-exploitation
+trade-off}\label{understanding-of-the-exploration-exploitation-trade-off.}}
+
+\hypertarget{epsilon-greedy-algorithm}{%
+\subsection{\texorpdfstring{\(\epsilon\)-greedy
+algorithm}{\textbackslash epsilon-greedy algorithm}}\label{epsilon-greedy-algorithm}}
+
+In \(\epsilon\)-greedy, the exploration-exploitation trade-off is used
+apparently in its theory. It selects an arm with best known probability
+(exploitation) or randomly select an arm (exploration) with probability
+in relation to the parameter \(\epsilon\). The parameter \(\epsilon\)
+controls the trade-off. Lower \(\epsilon\) means higher tendency for
+exploration, and vice versa.
+
+By the graph of the relationship between epsilon and final result, we
+know that there is a greatest value \(\epsilon_0\) which maximizes the
+expected reward, and other \(\epsilon\) lower or bigger than it gives
+worse outcome.
+
+\begin{itemize}
+\item
+  When \(\epsilon = 0\), the tradeoff is downgraded to pure
+  exploitation. Initially, all arms have \(\hat{\theta_j} = 0\), so it
+  randomly selects an arm. After the first nonzero outcome is observed,
+  the corresponding arm's \(\hat{\theta_j}\) will grow to a positive
+  value. Since there's only exploitation is used, this arm will be
+  selected for all of the rest playtimes.
+\item
+  When \(0 < \epsilon < \epsilon_0\), exploration process has increased
+  probability. Instead of selecting the first-nonzero-reward-arm
+  (above), the exploration can observe a more accurate estimated
+  probability, thus increasing the probability that the best arm be
+  selected. Therefore, as \(\epsilon\) increases in this interval, the
+  final reward also increases.
+\item
+  When \(\epsilon = \epsilon_0\), the algorithm reaches its peak.
+\item
+  When \(\epsilon_0 < \epsilon < 1\), the reward goes down, since too
+  much exploration may waste chances on random selected arms, although
+  we have already gain enough knowledge on the estimated probability and
+  can directly use exploitation. That's why as \(\epsilon\) increases,
+  the result tends to decrease.
+\item
+  When \(\epsilon = 1\), the trade-off is now pure exploration, which
+  means we randomly choose an arm all the times. The estimated
+  probability got no use here. In this case, the estimated final result
+  is close to \(\frac{1}{3} \cdot (0.8+0.6+0.5) \cdot 6000 = 3800\).
+\end{itemize}
+
+In conclusion, the algorithm balances exploration and exploitation
+through with given probabilities \(\epsilon\) and \(1- \epsilon\). This
+is a simple, but only a binary opposition trade-off.
+\pagebreak
+    \hypertarget{ucb-algorithm}{%
+\subsection{UCB algorithm}\label{ucb-algorithm}}
+
+In Upper Confidence Bound, or UCB algorithm, it uses some tricks to
+balance exploration and exploitation. It first tests each arm for one
+time, and then calculate the score of three arms and chooses the best by
+the following formula
+
+\[
+    \hat{\theta_j} + c\cdot \sqrt{\frac{2\cdot \log t}{count(j)}}
+\]
+
+where \(\hat{\theta_j}\) is the average reward obtained from arm \(j\)
+(similar to sample mean's definition), and the latter
+\(\sqrt{\frac{2\cdot \log t}{count(j)}}\) represents the standard
+deviation, indicating the length of the confidence interval. \(t\) is
+the current time played, and \(count(j)\) is the number of arm \(j\)
+pulled so far.
+
+In detail, the exploration-exploitation tradeoff happens in the follow
+way:
+
+\begin{itemize}
+\item
+  If an arm is pulled for few times,
+  \(\sqrt{\frac{2\cdot \log t}{count(j)}}\) tends to be higher since the
+  confidence interval is larger, and it will be more likely to be
+  selected more times. This is exploitation. As the time of sampling
+  increases, the confidence interval gets shorter, and we are getting
+  sure about the arms' probability, therefore the arm with greatest
+  probability will be selected more times. This is exploration.
+\item
+  The paramter \(c\) controls the importance of exploitation. A higher
+  \(c\) indicates larger weight of uncertainty, while a lower \(c\)
+  means a larger weight on exploitation.
+\end{itemize}
+
+UCB algorithm should behave better than \(\epsilon\)-greedy, since it
+judges the confidence intervals' upper bound to choose arm, instead of
+choosing with a fixed probability.
+
+    Additionally, we find that both \(\epsilon\)-greedy and UCB reaches best
+performance with a relatively small parameter (\(\epsilon\approx 0.04\)
+or \(c\approx 0.035\)), or, very high tendency of exploitation. This is
+because that, after enough tries, we are confident about the probability
+under three arms, and we have find the first arm has greatest
+probability (with a very high probability). Therefore a parameter near
+pure exploitation behaves best.
+
+Thinking about how to optimize the algorithms. Can we tend more to
+exploration at the beginning, and then `switches' to exploitation after
+we are sure about the arms? This is similar to the core of Thompson
+Sampling algorithm.
+\pagebreak
+    \hypertarget{thompson-sampling-algorithm}{%
+\subsection{Thompson Sampling
+algorithm}\label{thompson-sampling-algorithm}}
+
+In Thompson Sampling algorithm, the trade-off lies in another, and much
+better way. To better visualize the process, we plot the beta
+distribution's PDF and see how it changes over time, and try different
+combinations of prior beta distributions
+\(\mathrm{Beta}(\alpha, \beta)\).
+
+\hypertarget{different-case-examples}{%
+\subsubsection{Different case examples}\label{different-case-examples}}
+
+\hypertarget{case-1-mathrmbeta11-for-all-three-arms}{%
+\paragraph{\texorpdfstring{Case 1: \(\mathrm{Beta}(1,1)\) for all three
+arms}{Case 1: \textbackslash mathrm\{Beta\}(1,1) for all three arms}}\label{case-1-mathrmbeta11-for-all-three-arms}}
+
+    Consider a prior beta distribution of \(\mathrm{Beta}(1,1)\) for all the
+three arms, and plot the beta distribution's PDF from time to time. The
+code and result is as follows:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{PlotBetaTimes}\PY{p}{:} \PY{n+nb}{list} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{,} \PY{l+m+mi}{6000}\PY{p}{]}
+\PY{n}{colorBase}\PY{p}{:} \PY{n+nb}{list} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{orange}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{k}{def} \PY{n+nf}{plotBetaByTheta}\PY{p}{(}\PY{n}{param}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray}\PY{p}{,} \PY{n}{t}\PY{p}{:} \PY{n+nb}{int}\PY{p}{)}\PY{p}{:}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{After }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ iterations}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{)}
+    \PY{n}{x}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{)}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
+        \PY{n}{y}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{st}\PY{o}{.}\PY{n}{beta}\PY{p}{(}\PY{n}{param}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{param}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{pdf}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{} plot the PDF curve}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Arm}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{:Beta(}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{, }\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{param}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{param}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{} color the area under the curve}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{fill\PYZus{}between}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colorBase}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{TS\PYZus{}and\PYZus{}PlotBeta}\PY{p}{(}\PY{n}{prior}\PY{p}{:} \PY{n+nb}{list}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{int}\PY{p}{:}
+    \PY{n}{sumOfResult}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{0}  \PY{c+c1}{\PYZsh{} sum of rewards}
+    \PY{n}{BetaVar}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{prior}\PY{p}{)}  \PY{c+c1}{\PYZsh{} prior beta distribution parameters}
+    \PY{n}{theta}\PY{p}{:} \PY{n}{npy}\PY{o}{.}\PY{n}{ndarray} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+    \PY{n}{k} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} plot representative current Beta distribution }
+        \PY{k}{if} \PY{n}{t} \PY{o+ow}{in} \PY{n}{PlotBetaTimes}\PY{p}{:}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+            \PY{n}{plotBetaByTheta}\PY{p}{(}\PY{n}{BetaVar}\PY{p}{,} \PY{n}{t}\PY{p}{)}
+            \PY{n}{k}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+        \PY{c+c1}{\PYZsh{} main TS algorithm }
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}  \PY{c+c1}{\PYZsh{} sample \PYZsq{}theta\PYZsq{} from Beta distribution}
+            \PY{n}{theta}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{beta}\PY{p}{(}\PY{n}{BetaVar}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{BetaVar}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+        \PY{n}{arm} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{theta}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{} pull the arm and get the result}
+        \PY{n}{reward} \PY{o}{=} \PY{n}{npy}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{binomial}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{realProb}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{)}
+        \PY{n}{sumOfResult} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{c+c1}{\PYZsh{} update beta distribution parameter}
+        \PY{n}{BetaVar}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{n}{reward}
+        \PY{n}{BetaVar}\PY{p}{[}\PY{n}{arm}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{reward}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The final rewards gotten is }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{sumOfResult}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{n}{sumOfResult}
+
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+    \PY{n}{TS\PYZus{}and\PYZus{}PlotBeta}\PY{p}{(}\PY{n}{prior}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The final rewards gotten is 4801
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_31_1.png}
+
+    \begin{small}
+        Figure 5.1 \ \ \  The change of beta distribution PDF during the simulation process, with initial Beta distribution $\mathrm{Beta}(1,1)$ for all three arms.
+    \end{small}
+
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    (Explanation of the graph above: This graph contains the PDF of the beta
+distribution of the 3 arms at different time. The blue, orange, and
+green line representes the curve of arm 1,2,3's beta distribution
+respectively. The text shows the beta distribution parameters.)
+
+We know that a random variable \(X\sim \mathrm{Beta}(\alpha,\beta)\) has
+expectation \(E(X) = \frac{\alpha}{\alpha + \beta}\) and variance
+\(Var(X) = \frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta+1)}\).
+As the game continues, both \(a\) and \(b\) will grow larger, and the
+variance will get lower.
+
+Taking the blue line (the PDF curve of the first arm beta distribution)
+as an example. When there's only a few tries, the beta distribution has
+a larger variance, and the beta distribution PDF looks smooth. As the
+game continues, the beta distribution tends to be low in variance, and
+the curve tends to be slender and slender. At the same time, the beta
+distribution's expectation as well as the peak of the beta distribution
+converges to \(0.8\), the real probability of this arm.
+
+An exploration-exploitation trade-off lies under the above process. By
+the pseudocode, the choice comes from the sampled value of the beta
+distribution.
+
+\begin{itemize}
+\item
+  At the beginning, since all the beta distribution have a large
+  variance, there's a lot of uncertainty when sampling from the beta
+  distribution, which is like the exploration process. At the same time,
+  since we are not so sure about the estimation of real probabilities,
+  such exploration is important.
+\item
+  As the games proceeds, the beta distributions' variance decreases and
+  also converges to the real probability, the arm with highest
+  probability will be more and more likely to be chosen. This can avoid
+  useless exploration, as we are already very sure about the real
+  probabilities.
+\end{itemize}
+
+This exploration-exploitation trade-off is totally different from
+previous two trade-offs, the one in epsilon greedy and UCB. It tends to
+explore at first, and gradually switches to exploit after there are less
+uncertainty on estimated probabilities. This process not only make sure
+the correct arm will be selected for the most time, elimating the
+useless chances spent on exploration, but also gain data from real
+distributions which is more accurate than estimation. That's the reason
+accounts for its goodness.
+
+Then let's see another example below.
+
+    \hypertarget{case-2-prior-distribution-mathrmbeta601-401-mathrmbeta401-601-mathrmbeta23}{%
+\paragraph{\texorpdfstring{Case 2: prior distribution
+\(\mathrm{Beta}(601, 401), \mathrm{Beta}(401, 601), \mathrm{Beta}(2,3)\)}{Case 2: prior distribution \textbackslash mathrm\{Beta\}(601, 401), \textbackslash mathrm\{Beta\}(401, 601), \textbackslash mathrm\{Beta\}(2,3)}}\label{case-2-prior-distribution-mathrmbeta601-401-mathrmbeta401-601-mathrmbeta23}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+    \PY{n}{TS\PYZus{}and\PYZus{}PlotBeta}\PY{p}{(}\PY{n}{prior}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{601}\PY{p}{,} \PY{l+m+mi}{401}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{401}\PY{p}{,} \PY{l+m+mi}{601}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The final rewards gotten is 4760
+    \end{Verbatim}
+\pagebreak
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_34_1.png}
+
+    \begin{small}
+        Figure 5.2 \ \ \  The change of beta distribution PDF during simulation, with initial distribution $\mathrm{Beta}(601, 401), \mathrm{Beta}(401, 601), \mathrm{Beta}(2,3)$ for arm $1,2,3$ respectively.
+    \end{small}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    From the graph, the blue line (arm 1) has prior expectation close to
+\(0.6\), and it gradually moves towards \(0.8\), the real probability.
+The orange line almost does not change at all, since both the blue line
+and the orange line are low in variance, and the former one often
+samples higher.
+
+The final result is also close to 4800, the oracle value, as arm 1 is
+still chosen for the most of the time.
+\pagebreak
+    \hypertarget{case-3-prior-distribution-mathrmbeta801-201-mathrmbeta601-401-mathrmbeta501-501}{%
+\paragraph{\texorpdfstring{Case 3: prior distribution
+\(\mathrm{Beta}(801, 201), \mathrm{Beta}(601, 401), \mathrm{Beta}(501, 501)\)}{Case 3: prior distribution \textbackslash mathrm\{Beta\}(801, 201), \textbackslash mathrm\{Beta\}(601, 401), \textbackslash mathrm\{Beta\}(501, 501)}}\label{case-3-prior-distribution-mathrmbeta801-201-mathrmbeta601-401-mathrmbeta501-501}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+    \PY{n}{TS\PYZus{}and\PYZus{}PlotBeta}\PY{p}{(}\PY{n}{prior}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{801}\PY{p}{,} \PY{l+m+mi}{201}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{601}\PY{p}{,} \PY{l+m+mi}{401}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{501}\PY{p}{,} \PY{l+m+mi}{501}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The final rewards gotten is 4803
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_37_1.png}
+
+    \begin{small}
+        Figure 5.3 \ \ \  The change of beta distribution PDF during simulation, with initial distribution $\mathrm{Beta}(801, 201), \mathrm{Beta}(601, 401), \mathrm{Beta}(501, 501)$ for arm $1,2,3$ respectively.
+    \end{small}
+
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    This is a best case, since the prior beta distribution just matches the
+correct probability. Note that arm 2 and 3's beta distribution does not
+changed at all, which means arm 1 is being selected all the time.
+\pagebreak
+    \hypertarget{case-4-prior-distribution-mathrmbeta401-601-mathrmbeta601-401-mathrmbeta23}{%
+\paragraph{\texorpdfstring{Case 4: prior distribution
+\(\mathrm{Beta}(401, 601), \mathrm{Beta}(601, 401), \mathrm{Beta}(2,3)\)}{Case 4: prior distribution \textbackslash mathrm\{Beta\}(401, 601), \textbackslash mathrm\{Beta\}(601, 401), \textbackslash mathrm\{Beta\}(2,3)}}\label{case-4-prior-distribution-mathrmbeta401-601-mathrmbeta601-401-mathrmbeta23}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+    \PY{n}{TS\PYZus{}and\PYZus{}PlotBeta}\PY{p}{(}\PY{n}{prior}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{401}\PY{p}{,} \PY{l+m+mi}{601}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{601}\PY{p}{,} \PY{l+m+mi}{401}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The final rewards gotten is 3639
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_40_1.png}
+
+    \begin{small}
+        Figure 5.4 \ \ \  The change of beta distribution PDF during simulation, with initial distribution $\mathrm{Beta}(401, 601), \mathrm{Beta}(601, 401), \mathrm{Beta}(2,3)$ for arm $1,2,3$ respectively.
+    \end{small}
+
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    This time, the given beta distribution is `misleading', and the
+algorithm does not behave so well. From the plotted graph, in this case,
+the algorithm chooses arm 2 for many times, ignoring arm 1 because they
+have all being pulled for 1000 times prior and it turns out that arm 2
+is better. Arm 1 have a low chance to be corrected, since it is unlikely
+to be pulled under this circumstance.
+\pagebreak
+    \hypertarget{case-5-prior-distribution-mathrmbeta361-631-mathrmbeta401-601-mathrmbeta201-801}{%
+\paragraph{\texorpdfstring{Case 5: prior distribution
+\(\mathrm{Beta}(361, 631), \mathrm{Beta}(401, 601), \mathrm{Beta}(201, 801)\)}{Case 5: prior distribution \textbackslash mathrm\{Beta\}(361, 631), \textbackslash mathrm\{Beta\}(401, 601), \textbackslash mathrm\{Beta\}(201, 801)}}\label{case-5-prior-distribution-mathrmbeta361-631-mathrmbeta401-601-mathrmbeta201-801}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+    \PY{n}{TS\PYZus{}and\PYZus{}PlotBeta}\PY{p}{(}\PY{n}{prior}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{361}\PY{p}{,} \PY{l+m+mi}{631}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{401}\PY{p}{,} \PY{l+m+mi}{601}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{201}\PY{p}{,} \PY{l+m+mi}{801}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The final rewards gotten is 3565
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{my_proj_new_files/my_proj_new_43_1.png}
+
+    \begin{small}
+        Figure 5.5 \ \ \  The change of beta distribution PDF during simulation, with initial distribution $\mathrm{Beta}(361, 631), \mathrm{Beta}(401, 601), \mathrm{Beta}(201, 801)$ for arm $1,2,3$ respectively.
+    \end{small}
+
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The algorithm's output \(3565\) is still not so good (far from
+\(4800\)).As the playing time increases, the orange line (arm 2, with
+real probability \(0.6\)) moves gradually from the wrong position
+(\(\approx 0.4\)) to the correct position (\(\approx 0.6\)). Unluckily,
+too much emphasis has been put on this line instead of the blue line
+(arm 1). Arm 1's PDF nearly has not been corrected at all. As a result,
+the final result is also far from \(4800\).
+
+Now we can conclude the impacts of parameters \(\alpha\) and \(\beta\).
+\pagebreak
+    \hypertarget{conclusion}{%
+\subsubsection{Conclusion}\label{conclusion}}
+
+Then let's discuss the \textbf{impacts of \(\alpha\) and \(\beta\)}.
+
+\begin{itemize}
+\item
+  When both \(\alpha\) and \(\beta\) are very small, like the first
+  example (\(\mathrm{Beta}(1,1)\) for all three arms), all beta
+  distributions have relatively large variance, which means they have
+  similar probabilities to be selected, which is `exploration' process.
+  After some iterations, the best arm should be observed accurately, and
+  the final results will be good, except for some exploration chances
+  wasted at the beginning.
+\item
+  When both \(\alpha\) and \(\beta\) are large, like the third example,
+  the final result matters. Since the variances are relatively small,
+  much weight will be put on exploitation, therefore the final result
+  will depend highly on the given prior distribution.
+
+  \begin{itemize}
+  \item
+    If the arm with maximum probability is indeed the arm with best
+    prior distribution expectation, this algorithm perfroms extremely
+    well, since the best arm will be pulled for nearly all the time.
+    Like case 3
+    (\(\mathrm{Beta}(801, 201), \mathrm{Beta}(601, 401), \mathrm{Beta}(501, 501)\)),
+    the final result sometimes can even exceed the oracle value
+    \(4800\)!
+  \item
+    However, if the given probability is `misleading', that is , the arm
+    with maximum probability isn't the arm with best prior beta
+    distribution, then the algorithm does not perform so well. The
+    algorithm will select the non-optimal arm (the one with best prior
+    beta distribution expectation) instead of the optimal arm for nearly
+    all the time, the final result is far from \(4800\). Despite the
+    beta distribution will be corrected, at least partially corrected,
+    this does not help so much because \(\alpha\) and \(\beta\) are too
+    big for this to happen. Consider the case 5, the beta distribution
+    of arm 1 is moving from the wrong expectation (\(\approx 0.4\)) to
+    the correct position \(0.8\), it moves much slower than arm \(2\),
+    letting arm 2 be selected for the most time.
+  \end{itemize}
+\item
+  When one of \(\alpha, \beta\) is large and the other is small, the
+  result is also highly depends on the prior probability, like the above
+  (\(\alpha, \beta\) are both large). In general, if an arm whose sum of
+  prior beta distribution parameters, \(\alpha+\beta\), is large and the
+  expectation \(\frac{\alpha}{\alpha+\beta}\) is small, then this arm is
+  likely to be ignored for almost all of the time. If this arm is the
+  non-optimal arm, the final result might still be good enough, but if
+  this arm is the best arm, the final result might not be perfect, as it
+  wrongly selects the not-best arm.
+\end{itemize}
+
+In one word, the beta distribution method tend to `explore' at the
+beginning, and tend to `exploit' after enough simulations. That's the
+reason for its excellence, but also the reason for its failure under
+specific given parameters.
+
+In real practice, thompson sampling has another advantage that, only use
+prior beta distributions \(\mathrm{Beta}(1,1)\) is already good enough.
+Considering the fact that choosing bigger \(\alpha\) and \(\beta\) may
+either make it a bit better, or make it significantly worse,
+\(\mathrm{Beta}(1,1)\) is a good solution concerning both accuracy and
+stability. In contrast, both epsilon-greedy and UCB algorithm requires a
+careful selection of the parameter \(\epsilon\) or \(c\), for a bad
+parameter might make the algorithm bahave significantly worse.
+\pagebreak
+    \hypertarget{dependent-arm-case}{%
+\section{Dependent-arm case}\label{dependent-arm-case}}
+
+We implicitly assume the reward distribution of three arms are
+independent. How about the dependent case? 
+
+\hypertarget{problem-description}{%
+\subsection{Problem description}\label{problem-description}}
+
+Like the basic setting, consider a time-slotted bandit system with
+several arms. Pulling each arm \(j\) will obtain a reward satisfying
+Bernoulli distribution, independently. The parameters of the Bernoulli
+distribution are constant but unknown to us. However, it is given that
+the difference value of some arms are no larger than some value. This
+means gaining the knowledge of an arm may help us estimate another arm.
+Then how can we find the optimal policy to play the game?
+
+Consider this detailed example settings:
+
+\begin{itemize}
+\item
+  There are 3 arms. \(N = 6000\).
+\item
+  The reward of arm \(j\) satisfies \(\mathrm{Bern}(\theta_j)\) for
+  \(j = 1,2,3\). \(\theta_j\) is fixed but unknown.
+\item
+  We know that the difference gap between arm 2 and arm 3 is less than
+  \(0.1\), or in other words,
+  \(\lvert \theta_2 - \theta_3 \rvert \leq 0.1\).
+\end{itemize}
+
+\hypertarget{main-idea-and-algorithm-design}{%
+\subsection{Main idea and algorithm
+design}\label{main-idea-and-algorithm-design}}
+
+We can still apply the original algorithm, UCB or Thompson sampling, to
+this settings. But we might waste some tries on exploring, since knowing
+arm 2 can help us estimate arm 3. For example, if we found arm 2 has a
+poor probability, we can ignore arm 3 as well since it is sure to have a
+poor outcome as well.
+
+To improve it, we can \textbf{group arm 2 and arm 3 into a cluster} and
+view them together. This includes calculating the `joint' probability.
+If we choose cluster 1, with only arm 1 in it, directly pull arm 1. If
+we choose cluster 2 with two possible subchoices arm 2 and arm 3, then
+we compare their estimated probabilities separately and decide.
+
+Consider modifying the UCB algorithm. Besides \(\theta_j\) recording the
+estimated probability of each arm, we need another \(\phi_g\) to record
+the estimated probability of each cluster. Similarly, we need
+\(groupCount(g)\) besides \(armCount(j)\) to store both the count of
+arms and that of clusters.
+
+The pseudocode of both the general case and the detailed case are as follows:
+
+
+\begin{minipage}{15cm}
+    \begin{algorithm}[H]
+        \caption{UCB-Cluster (General case)}
+        \begin{algorithmic}[1]
+            \For{$t=1,2,3$}
+                \State Pull three arms exactly once and calculate the estimated probabilities
+            \EndFor
+            \For{$t=4, \cdots, N$}
+                
+
+                \State Choose the best cluster
+
+                \State Choose the best arm inside the above chosen cluster
+
+                \State Update the 'count' and 'probability' of both the arm and the corresponding cluster
+            \EndFor
+
+        \end{algorithmic}
+    \end{algorithm}
+\end{minipage}
+
+
+
+\begin{minipage}{17cm}
+\begin{algorithm}[H]
+    \caption{UCB-Cluster (Given precise basic settings)}
+    \begin{algorithmic}[1]
+        \For{$t=1,2,3$}
+            \State Pull three arms exactly once and calculate the estimated probabilities
+        \EndFor
+        \For{$t=4, \cdots, N$}
+            
+            \State $G(t) \leftarrow\arg\max_{g\in \{1,2\}}(\hat{\phi_g} + c_1 \cdot \sqrt{\frac{2\log t}{groupCount(g)}})$ \Comment{Choose the best cluster}
+            \State \If{$G(t) = 1$}
+                \State $I(t) \leftarrow 1$  \Comment{This cluster has only one arm, simply choose it}
+                
+                \State $armCount(1) \leftarrow armCount(1) + 1$ \Comment{Update armCount and groupCount} 
+                \State $groupCount(1) \leftarrow groupCount(1) + 1$
+
+                
+                \State $\hat{\theta}(1) \leftarrow \hat{\theta}(1)  + \frac{1}{armCount(1)}\left[
+                    r_{I(1)} - \hat{\theta}(1)
+                \right]$ \Comment{Update probability of this arm}
+                \State $\hat{\phi}(1) \leftarrow \hat{\phi}(1)  + \frac{1}{groupCount(1)}\left[
+                    r_{I(1)} - \hat{\phi}(1)
+                \right]$ \Comment{Update probability of this cluster}
+            \ElsIf{$G(t) = 2$}
+                \State $I(t) \leftarrow \arg\max_{
+                    j\in \{2,3\}
+                    } ( \hat{\theta_j} + c_2 \cdot 
+                    \sqrt{\frac{2\log t}{armCount(j)}})$
+                    \Comment{Best arm inside this cluster}
+                
+                \State $armCount(I(t)) \leftarrow armcount(I(t)) + 1$ \Comment{Update armCount and groupCount} 
+                    \State $groupCount(2) \leftarrow groupCount(2) + 1$
+                \State $\hat{\theta}(I(t)) \leftarrow \hat{\theta}(I(t))  + \frac{1}{armCount(I(t))}\left[
+                    r_{I(t)} - \hat{\theta}(I(t))
+                \right]$ \Comment{Update probability of arm}
+                \State $\hat{\phi}(2) \leftarrow \hat{\phi}(2)  + \frac{1}{groupCount(2)}\left[
+                    r_{2} - \hat{\phi}(2)
+                \right]$  \Comment{Update probability of this cluster}
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+\end{minipage}
+
+We can also use a modifies Thompson sampling algorithm for this
+dependent-case. Similar to the modified \(\mathrm{UCB-Cluster}\) above, we
+measure the distribution of probabilities of clusters, as well as inside
+each clusters.
+\pagebreak
+    \hypertarget{constraint-sensitive-case}{%
+\section{Constrainted case}\label{constraint-sensitive-case}}
+
+We implicitly assume there are no constraints when pulling arms. For
+example, pull each arm will generate some cost and there are some bounds
+on such cost. Can you design an algorithm for constrained bandit
+learning problem?
+
+    \hypertarget{problem-description}{%
+\subsection{Problem description}\label{problem-description}}
+
+Like the basic setting, we consider a time-slotted bandit system with
+three arms. Pulling each arm \(j\) will obtain a reward satisfying
+Bernoulli distribution. However, in this problem, there's a major
+difference: you are given a number of budget, and you need to pay some
+money for pulling each arm. The money you need to pay is known to you,
+but the real probability \(\theta_j\) is still unknown to you. The type
+of money you pay is different from the type of the reward.
+
+How to find the optimal policy to play the game which the expectation of
+aggregated reward is maximized?
+
+Consider this detailed settings:
+
+\begin{itemize}
+\tightlist
+\item
+  Your budget is \(5000\)
+\item
+  Parameters \(\theta_j\) are still \(0.8, 0.6, 0.5\) for arm \(1,2,3\)
+  respectively.
+\item
+  You need to pay \(c_j = 3, 2, 1\) for pulling the arm \(1,2,3\)
+  respectively.
+\end{itemize}
+
+\hypertarget{main-idea-and-algorithm}{%
+\subsection{Main idea and algorithm}\label{main-idea-and-algorithm}}
+
+\hypertarget{oracle-perspective}{%
+\subsubsection{Oracle perspective}\label{oracle-perspective}}
+
+Suppose we can obtain the Bernoulli parameters from an oracle. Then, in
+order to maximize the reward, simply pulling the arm with greatest ratio
+(\(\theta_j / c_j\)), the expectation of reward divided by the cost need
+to pay). In this setting, pulling arm 3 all the times gives the best
+outcome.
+
+\hypertarget{modified-bandit-algorithm}{%
+\subsubsection{Modified bandit
+algorithm}\label{modified-bandit-algorithm}}
+
+\hypertarget{ucb-algorithm}{%
+\paragraph{1. UCB algorithm}\label{ucb-algorithm}}
+
+
+
+We can still use the original UCB algorithm to find the arm with
+greatest probability \(\theta\), except that we need to take the cost
+into account. The modified UCB algorithm uses
+
+\[
+    I(t) = \arg\max_{j\in \{1,2,3\}} \left( \frac{\hat{\theta_j}}{c_j} + c\cdot \sqrt{\frac{2\log t}{\mathrm{count}(j)}} \right)
+\]
+
+to choose an arm every time.
+
+The whole pseudocode is as follows:
+
+\begin{minipage}{10cm}
+    \begin{algorithm}[H]
+        \caption{UCB-With-Cost}
+        \begin{algorithmic}[1]
+            \For{$t=1,2,3$}
+                \State $I(t) \leftarrow t$
+                \State $count(I(t)) \leftarrow 1$
+                \State $\hat{\theta}(I(t))\leftarrow r_{I(t)}$
+            \EndFor
+            \For{$t=4, \cdots, N$}
+                
+                \State $I(t) \leftarrow\arg\max_{j\in \{1,2,3\}} \left( \frac{\hat{\theta_j}}{c_j} + c\cdot \sqrt{\frac{2\log t}{\mathrm{count}(j)}} \right)$
+
+                \State $count(I(t))\leftarrow count(I(t)) + 1$
+                \State $\hat{\theta}(I(t)) \leftarrow \hat{\theta}(I(t))  + \frac{1}{Count(I(t))}\left[
+                        r_{I(t)} - \hat{\theta}(I(t))
+                    \right]$
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+    \end{minipage}
+
+\hypertarget{thompson-sampling-algorithm}{%
+\paragraph{2. Modified Thompson Sampling
+Algorithm}\label{thompson-sampling-algorithm}}
+
+Recall that Thompson Sampling algorithm performs better than UCB
+generally, given that it only needs prior beta distribution
+\(\mathrm{Beta}(1,1)\). We can still use this to estimate the
+probabilities under each arm, but use the ratio (instead of the
+estimated \(\hat{\theta_j}\)) to decide our choice every time.
+
+
+
+    
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
